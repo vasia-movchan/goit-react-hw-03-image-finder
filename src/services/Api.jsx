@@ -21,5 +21,3 @@ export async function GetDataFromAPI(searchQuery, page) {
   const response = await axios.get('', optionsQuery);
   return response.data;
 }
-
-export default { GetDataFromAPI };

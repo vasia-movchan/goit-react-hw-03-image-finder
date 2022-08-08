@@ -3,7 +3,7 @@ import { Container } from './App.styled';
 import { Searchbar } from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Button } from 'components/Button/Button';
-import API from 'services/Api';
+import { GetDataFromAPI } from 'services/Api';
 
 export class App extends Component {
   state = {
@@ -29,7 +29,7 @@ export class App extends Component {
     const page = this.state.page;
 
     if (prevState.inputValue !== searchQuery) {
-      const response = await API.GetDataFromAPI(searchQuery, page);
+      const response = await GetDataFromAPI(searchQuery, page);
       this.setState({
         images: [...response.hits],
         totalHits: response.totalHits,
@@ -37,7 +37,7 @@ export class App extends Component {
     }
 
     if (prevState.page !== page) {
-      const response = await API.GetDataFromAPI(searchQuery, page);
+      const response = await GetDataFromAPI(searchQuery, page);
       this.setState({
         images: [...this.state.images, ...response.hits],
         totalHits: response.totalHits,

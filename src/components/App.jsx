@@ -16,6 +16,7 @@ export class App extends Component {
     showModal: false,
     largeImage: '',
     isLoading: false,
+    error: null,
   };
 
   handleSubmitForm = e => {
@@ -54,31 +55,52 @@ export class App extends Component {
 
     if (prevState.inputValue !== searchQuery) {
       this.setState({ isLoading: true });
-      const response = await GetDataFromAPI(searchQuery, page);
-      this.setState({
-        images: [...response.hits],
-        totalHits: response.totalHits,
-        isLoading: false,
-      });
+      try {
+        const response = await GetDataFromAPI(searchQuery, page);
+        this.setState({
+          images: [...response.hits],
+          totalHits: response.totalHits,
+        });
+      } catch (error) {
+        this.setState({ error });
+      } finally {
+        this.setState({
+          isLoading: false,
+        });
+      }
     }
 
     if (prevState.page !== page) {
       this.setState({ isLoading: true });
-      const response = await GetDataFromAPI(searchQuery, page);
-      this.setState({
-        images: [...this.state.images, ...response.hits],
-        totalHits: response.totalHits,
-        isLoading: false,
-      });
+      try {
+        const response = await GetDataFromAPI(searchQuery, page);
+        this.setState({
+          images: [...this.state.images, ...response.hits],
+          totalHits: response.totalHits,
+        });
+      } catch (error) {
+        this.setState({ error });
+      } finally {
+        this.setState({
+          isLoading: false,
+        });
+      }
     }
   }
 
   render() {
-    const { images, totalHits, showModal, largeImage, isLoading } = this.state;
+    const { images, totalHits, showModal, largeImage, isLoading, error } =
+      this.state;
     return (
       <Container>
         <Searchbar onSubmit={this.handleSubmitForm} />
-        <ImageGallery images={images} openModal={this.openModal} />
+
+        {error && <p>Whoops, something went wrong: {error.message}</p>}
+
+        {images.length > 0 && (
+          <ImageGallery images={images} openModal={this.openModal} />
+        )}
+
         {isLoading && <Loader />}
 
         {images.length > 0 && totalHits > 12 && (

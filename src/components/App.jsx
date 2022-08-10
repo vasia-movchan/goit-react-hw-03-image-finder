@@ -21,7 +21,7 @@ export class App extends Component {
 
   handleSubmitForm = e => {
     e.preventDefault();
-    this.setState({ inputValue: e.target.elements.search.value });
+    this.setState({ inputValue: e.target.elements.search.value, page: 1 });
   };
 
   handleButtonLoadMore = () => {
@@ -49,6 +49,17 @@ export class App extends Component {
     }
   };
 
+  getDataforState = data => {
+    const dataForState = data.map(elem => {
+      return {
+        id: elem.id,
+        webformatURL: elem.webformatURL,
+        largeImageURL: elem.largeImageURL,
+      };
+    });
+    return dataForState;
+  };
+
   async componentDidUpdate(prevProps, prevState) {
     const searchQuery = this.state.inputValue;
     const page = this.state.page;
@@ -57,8 +68,9 @@ export class App extends Component {
       this.setState({ isLoading: true });
       try {
         const response = await GetDataFromAPI(searchQuery, page);
+        const imagesArray = this.getDataforState(response.hits);
         this.setState({
-          images: [...response.hits],
+          images: [...imagesArray],
           totalHits: response.totalHits,
         });
       } catch (error) {
@@ -74,8 +86,9 @@ export class App extends Component {
       this.setState({ isLoading: true });
       try {
         const response = await GetDataFromAPI(searchQuery, page);
+        const imagesArray = this.getDataforState(response.hits);
         this.setState({
-          images: [...this.state.images, ...response.hits],
+          images: [...this.state.images, ...imagesArray],
           totalHits: response.totalHits,
         });
       } catch (error) {

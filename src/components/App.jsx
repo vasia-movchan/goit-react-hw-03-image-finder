@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Container } from './App.styled';
-import { Searchbar } from 'components/Searchbar/Searchbar';
+import Searchbar from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Button } from 'components/Button/Button';
 import { GetDataFromAPI } from 'services/Api';
@@ -19,9 +19,8 @@ export class App extends Component {
     error: null,
   };
 
-  handleSubmitForm = e => {
-    e.preventDefault();
-    this.setState({ inputValue: e.target.elements.search.value, page: 1 });
+  submitForm = searchQuery => {
+    this.setState({ inputValue: searchQuery, page: 1 });
   };
 
   handleButtonLoadMore = () => {
@@ -32,19 +31,16 @@ export class App extends Component {
 
   openModal = largeImageItem => {
     this.setState({ showModal: true, largeImage: largeImageItem });
-    window.addEventListener('keydown', this.handleKeyPress);
+    window.addEventListener('keydown', this.closeModal);
   };
 
   closeModal = event => {
     if (event.target === event.currentTarget) {
-      this.setState({ showModal: false });
+      this.setState({ showModal: false, largeImage: '' });
     }
-  };
 
-  handleKeyPress = e => {
-    console.log(e);
-    if (e.code === 'Escape') {
-      this.setState({ showModal: false });
+    if (event.code === 'Escape') {
+      this.setState({ showModal: false, largeImage: '' });
       window.removeEventListener('keydown', this.handleKeyPress);
     }
   };
@@ -106,20 +102,16 @@ export class App extends Component {
       this.state;
     return (
       <Container>
-        <Searchbar onSubmit={this.handleSubmitForm} />
+        <Searchbar onSubmit={searchQuery => this.submitForm(searchQuery)} />
 
         {error && <p>Whoops, something went wrong: {error.message}</p>}
-
         {images.length > 0 && (
           <ImageGallery images={images} openModal={this.openModal} />
         )}
-
         {isLoading && <Loader />}
-
         {images.length > 0 && totalHits > 12 && (
           <Button loadMore={this.handleButtonLoadMore} />
         )}
-
         {showModal && (
           <Modal largeImg={largeImage} closeModal={this.closeModal} />
         )}

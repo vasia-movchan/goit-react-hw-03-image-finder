@@ -20,7 +20,7 @@ export class App extends Component {
   };
 
   submitForm = searchQuery => {
-    this.setState({ inputValue: searchQuery, page: 1 });
+    this.setState({ inputValue: searchQuery, page: 1, images: [] });
   };
 
   handleButtonLoadMore = () => {
@@ -60,25 +60,7 @@ export class App extends Component {
     const searchQuery = this.state.inputValue;
     const page = this.state.page;
 
-    if (prevState.inputValue !== searchQuery) {
-      this.setState({ isLoading: true });
-      try {
-        const response = await GetDataFromAPI(searchQuery, page);
-        const imagesArray = this.getDataforState(response.hits);
-        this.setState({
-          images: [...imagesArray],
-          totalHits: response.totalHits,
-        });
-      } catch (error) {
-        this.setState({ error });
-      } finally {
-        this.setState({
-          isLoading: false,
-        });
-      }
-    }
-
-    if (prevState.page !== page) {
+    if ((prevState.inputValue !== searchQuery || prevState.page) !== page) {
       this.setState({ isLoading: true });
       try {
         const response = await GetDataFromAPI(searchQuery, page);

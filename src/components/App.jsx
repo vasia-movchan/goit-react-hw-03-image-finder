@@ -37,6 +37,7 @@ export class App extends Component {
   closeModal = event => {
     if (event.target === event.currentTarget) {
       this.setState({ showModal: false, largeImage: '' });
+      window.addEventListener('keydown', this.closeModal);
     }
 
     if (event.code === 'Escape') {

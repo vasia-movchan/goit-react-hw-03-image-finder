@@ -41,7 +41,7 @@ export class App extends Component {
 
     if (event.code === 'Escape') {
       this.setState({ showModal: false, largeImage: '' });
-      window.removeEventListener('keydown', this.handleKeyPress);
+      window.removeEventListener('keydown', this.closeModal);
     }
   };
 

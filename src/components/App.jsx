@@ -4,7 +4,7 @@ import Searchbar from 'components/Searchbar/Searchbar';
 import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 import { Button } from 'components/Button/Button';
 import { GetDataFromAPI } from 'services/Api';
-import { Modal } from 'components/Modal/Modal';
+import Modal from 'components/Modal/Modal';
 import { Loader } from 'components/Loader/Loader';
 
 export class App extends Component {
@@ -31,18 +31,11 @@ export class App extends Component {
 
   openModal = largeImageItem => {
     this.setState({ showModal: true, largeImage: largeImageItem });
-    window.addEventListener('keydown', this.closeModal);
   };
 
   closeModal = event => {
-    if (event.target === event.currentTarget) {
+    if (event.target === event.currentTarget || event.code === 'Escape') {
       this.setState({ showModal: false, largeImage: '' });
-      window.removeEventListener('keydown', this.closeModal);
-    }
-
-    if (event.code === 'Escape') {
-      this.setState({ showModal: false, largeImage: '' });
-      window.removeEventListener('keydown', this.closeModal);
     }
   };
 
